@@ -1,24 +1,7 @@
-# vuedongsan
-
-## Project setup
+# 뷰동산 사이트 만들기  
+> Vue를 시작하는 방법
 ```
-npm install
+npm install -g @vue/cli
+vue create vuedongsan
 ```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+하면 뷰 시작할 준비 완료
