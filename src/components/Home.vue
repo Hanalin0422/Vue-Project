@@ -1,25 +1,29 @@
 <template>
-    <Header/>
+  <div id="visual-slider">
     <!-- 중간에 보일 부분 시작 -->
-    <div id="visual-slider">
-        <div class="inner">
+      <div class="inner">
         <div class="visual-txt">
-            <p> <strong style="font-size: 80px;">FullStack </strong><br>
-            Vue.js <br>+<br> Spring Boot</p>
+            <Transition name="fade-in">
+              <p v-if="show == true"> <strong style="font-size: 80px;">FullStack </strong><br>
+                Vue.js <br>+<br> Spring Boot</p>
+            </Transition>
+          </div>
         </div>
-        </div>
-    </div>
+      </div>
 </template>
 
 <script>
-import Header from './Header.vue';
 
 export default {
     name : 'Home',
-    components:{
-        Header,
-    }
-
+    data(){
+      return{
+        show : false,
+      }
+    },
+    mounted() {
+      this.show = true;
+    },
 }
 </script>
 
@@ -43,17 +47,16 @@ body{
 #visual-slider .inner .visual-txt{
   padding: 415px auto;
   position: absolute;
-  top: 50%;
+  top: 120%;
   text-align: center;
   margin-top : -200px;
-  margin-left : 10%;
 } 
 #visual-slider .inner .visual-txt p{
   font-size: 50px;
   position: absolute;
   width: 600px;
   color: aliceblue;
-  text-shadow: 0px 0px 10px #FFF700;
+  text-shadow: 0px 0px 10px #333;
   font-family: "Dancing Script", cursive;
   font-optical-sizing: auto;
   font-weight: 700;
@@ -63,4 +66,15 @@ body{
   -ms-user-select:none;
   user-select:none;
 }
+.fade-in-enter-from{
+  transform: translateX(30px);
+  opacity: 0;
+}
+.fade-in-enter-active{
+  transition: all 1s ease-out;
+}
+.fade-in-enter-to{
+  opacity: 1;
+}
+
 </style>
