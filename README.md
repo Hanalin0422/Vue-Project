@@ -1,4 +1,6 @@
 # Blog 만들기
+![image](https://github.com/Hanalin0422/Rodanthe-BE/assets/78638427/f2eb9d90-1e0c-49a1-86b9-5d6311ec353e)
+
 ### 부트 스트랩을 이용해보자!
 ---
 - 부트스트랩을 쓰면 귀찮은 html, css는 금방 완성시킬 수 있음.
