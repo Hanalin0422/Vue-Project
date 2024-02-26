@@ -4,6 +4,7 @@
             <h4>{{ contentData[idx].title}}</h4>
             <p>{{ contentData[idx].date}}</p>
             <h5>{{ contentData[idx].content}}</h5>
+            <router-view></router-view>
         </div>
         <div class="click">
             <button @click="$router.go(-1)" type="button" id="color" class="btn btn-outline-light">뒤로 가기</button>
