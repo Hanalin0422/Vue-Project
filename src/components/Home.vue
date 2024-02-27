@@ -19,7 +19,7 @@
                 <Post :postData="postData"/>
             </div>
             <div class="btn-a">
-                <button @click="more" >더보기</button>
+                <button @click="more" v-if="flag == true">더보기</button>
             </div>
             <div class="footer">
                 <ul class="footer-button-plus">
@@ -31,13 +31,11 @@
         
         <div v-if="step == 1">
             <!-- 필터선택페이지 -->
-            <div class="upload-image" :style="{backgroundImage : `url(${uploadImg})`}"></div>
+            <div :class="chooseFilter" class="upload-image" :style="{backgroundImage : `url(${uploadImg})`}"></div>
             <div class="filters">
-                <div class="filter-1"></div>
-                <div class="filter-1"></div>
-                <div class="filter-1"></div>
-                <div class="filter-1"></div>
-                <div class="filter-1"></div>
+                <FilterBox :uploadImg="uploadImg"  :filter="f" v-for="(f, i) in filterList" :key="i">
+                    {{ filter }}
+                </FilterBox>
             </div>
             <div class="footer">
                 <ul class="footer-button-plus">
@@ -49,7 +47,7 @@
 
         <div v-if="step == 2">
             <!-- 글작성페이지 -->
-            <div class="upload-image" :style="{backgroundImage : `url(${uploadImg})`}"></div>
+            <div :class="chooseFilter" class="upload-image" :style="{backgroundImage : `url(${uploadImg})`}"></div>
             <div class="write">
                 <textarea @change="userPost = $event.target.value" class="write-box">write!</textarea>
             </div>
@@ -62,6 +60,8 @@
 import Post from './Post.vue';
 import axios from 'axios';
 import postData from '../assets/posting';
+import FilterBox from './FilterBox.vue';
+import filterList from '../assets/filter';
 
 export default {
     name : 'Home',
@@ -72,16 +72,23 @@ export default {
             step : 0,
             uploadImg : "",
             userPost : "",
+            flag : true,
+            filterList : filterList,
+            chooseFilter : "",
         }
     },
     components :{
         Post,
+        FilterBox,
     },
     methods:{
         more(){
             axios.get(`https://codingapple1.github.io/vue/more${this.click}.json`)
             .then((e)=>{
                 this.postData.push(e.data);
+                if(this.click == 2){
+                    this.flag = false;
+                }
             })
             .catch(()=>{
                 alert('더 이상 게시물이 없습니다!');
@@ -95,18 +102,23 @@ export default {
         },
         publish(){
             let myPost = {
-                name: "What the",
+                name: "JiSeo",
                 userImage: "https://picsum.photos/100?random=3",
                 postImage: this.uploadImg,
                 likes: 16,
                 date: "May 15",
                 liked: false,
                 content: this.userPost,
-                filter: "perpetua"
+                filter: this.chooseFilter,
             };
             this.postData.unshift(myPost);
             this.step = 0;
         }
+    },
+    mounted(){
+        this.emitter.on('nowFilter', (e)=>{
+            this.chooseFilter = e;
+        })
     }
 }
 </script>
