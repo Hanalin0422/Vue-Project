@@ -4,6 +4,8 @@ import Home from './components/Home.vue'
 import Detail from './components/Detail'
 import Author from './components/Author.vue'
 import Comments from './components/Comments.vue'
+import Post from './components/Post.vue'
+import Writing from './components/Writing.vue';
 
 const routes = [
     {
@@ -28,6 +30,17 @@ const routes = [
             {
                 path: "comment",
                 component : Comments,
+            }
+        ]
+    },
+    {
+        path :"/post",
+        component : Post,
+        name :'Post',
+        children:[
+            {
+                path: "writing",
+                component : Writing,
             }
         ]
     },

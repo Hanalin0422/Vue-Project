@@ -10,6 +10,7 @@
             <ul class="menu">
                 <li><a href="/detail">소개 페이지</a></li>
                 <li><a href="/list">포트폴리오</a></li>
+                <li><a href="/post">게시판</a></li>
             </ul>
         </nav>
     </header>
