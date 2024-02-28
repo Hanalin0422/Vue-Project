@@ -950,3 +950,21 @@ setup(){
 ```
 이렇게 쓰면 됨.
 - 쓸때 함수() 이렇게 써도 되고 아니면 함수 그냥 이렇게 소괄호 빼도 됨.
+  
+<br/><br/>
+
+### 마지막으로 Javascript의 IndexOf()
+---
+```
+string.indexOf(searchvalue, position)
+```
+- indexOf 함수는 문자열에서 특정 문자열을 찾고, 검색된 문자열이 '첫번째'로 나타나는 위치 index를 리턴함.
+- 파라미터  
+    - searchvalue : 필수 입력값, 찾을 문자열
+    - position : optional, 기본값은 0, string에서 searchvalu를 찾기 시작할 위치
+- 찾는 문자열이 없으면 -1을 리턴함.
+- 문자열을 찾을 때 대소문자를 구별함.  
+
+
+자바스크립트 문법 잘 모르겠으면 문법 잘 정리해둔 블로그 살펴보기  
+: https://hianna.tistory.com/379
