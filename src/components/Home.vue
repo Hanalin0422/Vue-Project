@@ -9,6 +9,12 @@
         <ul class="header-button-right" v-if="step==2" @click="publish">
             <li>발행</li>
         </ul>
+        <ul class="header-button-right" v-if="step==0" @click="step=3">
+            <li>Your Follower</li>
+        </ul>
+        <ul class="header-button-right" v-if="step==3" @click="step=0">
+            <li>돌아가기</li>
+        </ul>
         <img src="../assets/logo.png" class="logo" />
     </div>
     <div class="tabs">
@@ -49,12 +55,12 @@
             <!-- 글작성페이지 -->
             <div :class="chooseFilter" class="upload-image" :style="{backgroundImage : `url(${uploadImg})`}"></div>
             <div class="write">
-                <textarea @change="userPost = $event.target.value" class="write-box">write!</textarea>
+                <textarea @change="userPost = $event.target.value" class="write-box" placeholder="write!"></textarea>
             </div>
         </div>
 
         <div v-if="step == 3">
-            <MyPage :one="1"/>
+            <MyPage/>
         </div>
 
     </div>
@@ -74,7 +80,7 @@ export default {
         return {
             click : 0,
             postData : postData,
-            step : 3,
+            step : 0,
             uploadImg : "",
             userPost : "",
             flag : true,
@@ -167,9 +173,10 @@ export default {
 .header-button-right {
   color: skyblue;
   float: right;
-  width: 50px;
+  width: 60px;
   cursor: pointer;
   margin-top: 10px;
+  margin-right: 20px;
 }
 .footer {
   width: 100%;
