@@ -264,7 +264,7 @@ app.config.globalProperties.emitter
     ```
     import axios from 'axios';
     axios.defaults.baseURL = 'http://localhost:3306';
-    app.config.globalProperties.axios = axios;
+    app.config.globalProperties.$axios = axios;
     ```
     이런 식으로.
 - 어쨌든 저렇게 main.js를 셋팅하고 나면 emitter라는 변수를 전역으로 쓸 수 있게 되면서 mitt 라이브러리가 동작하게 됨.  
@@ -422,3 +422,208 @@ ageAdd(state, data){
 }
 ```
 요렇게 하면 10씩 더할 수 있는 거임.
+<br/><br/>
+
+### Vuex3 : actions 항목을 알아보자
+---
+```
+const store = createStore({
+    ~~~~~
+    actions :{
+        
+    }
+})
+```
+- actions:{}란?
+    - ajax하는 곳
+    - 또는 오래걸리는 작업들
+    - 서버에서 데이터를 받아와서 무언가를 보여주고 싶을 때, 혹은 state로 저장하고 싶을때 ajax 요청을 여기에 다 적으면 됨.
+
+[더보기 게시물 ajax 요청을 하려면? ]
+- mutations안에다가 ajax 요청을 하면 안됨
+    - 이거는 순차적으로 state를 변경하고 싶을때 실행에 오래 걸리는 함수가 있다면 순차적으로 실행을 할 수가 없기 때문임.
+
+아무튼 @click과 같은 이벤트를 실행시켰을때, 내가 actions에 선언한 함수가 동작하고 싶게 만들고 싶다면 
+```
+@click="$store.dispatch('getData')"
+```
+- commit()은 mutations에게 부탁
+- dispatch()는 actions에게 부탁  
+
+#### 이때, actions 안에서 state를 변경하고 싶다면?
+=> state변경은 무조건 mutations가야함!!  
+```
+  mutations: {
+    increment (state) {
+      state.count++
+    }
+  },
+  actions: {
+    increment (context) {
+      context.commit('increment')
+    }
+  },
+```
+이런식으로 commit의 도움으로 actions내에서 mutations를 이용해 state를 수정 및 저장할 수 있음.
+```
+mutations:{
+    ~~~~~
+
+        setMore(state, data){
+            state.more = data;
+        }
+    },
+    actions :{
+        getData(context){
+            axios.get(`https://codingapple1.github.io/vue/more0.json`)
+            .then((e)=>{
+                context.commit('setMore', e.data);
+            })
+            .catch((err)=>{
+                console.log(err);
+            })
+        }
+    }
+```
+따라서,  
+- ajax는 actins에서
+- state 변경은 항상 mutations 안에서  
+해결하기!!
+<br/><br/>
+
+### Vuex 4 : mapState를 사용하면 편리할 수도 있음
+---
+vue에서 함수를 만들 때 두가지를 선택할 수 있음.  
+- methods : {}
+- computed : {}
+
+```
+    methods:{
+        now(){
+            return new Date(); //현재 시간을 알려주는 함수.
+```
+와
+```
+    computed:{
+        now2(){
+            return new Date();
+        }
+    },
+```
+를 살펴보면 코드가 같기 때문에 똑같은 기능을 함.  
+- 그러나 methods함수는 사용할 때마다 실행되는 반면에  
+computed함수는 처음 vue 파일이 로드되고나서 한번 쓱 읽고 나서 그 뒤에 함수가 실행되면 그 값을 퉤하고 뱉음.  
+- computed()안에 있는 건 데이터가 변경될때만 실행을 하고 평소에는 다시는 실행을 안함. -> 컴퓨팅 파워를 절약할 수 있는 함수라고 보면 됨.  
+
+- computed() : 계산결과저장용 함수들임. 사용해도 실행되지 않으며 처음 실행하고 값을 간직함. 데이터가 변경되면 다시 실행해주긴 함.
+- methods() : 사용할 때마다 실행됨.
+```
+<p>{{ now() }} {{ 카운터 }}</p>
+<button @click="카운터++">버튼</button>
+```
+이렇게 methods()를 사용하면 계속해서 함수가 실행되는 반면,  
+computed() 함수는 값을 저장하는 함수이기 때문에 소괄호를 쓰는게 아니라 함수 이름만 써야함.  
+```
+<p>{{ now2 }} {{ 카운터 }}</p>
+<button @click="카운터++">버튼</button>
+```
+state 데이터랑 똑같이 취급해주면 됨.  
+이렇게 하면 처음에 로딩될때 데이터가 계산되어서 계속 카운터를 눌러도 값이 변하지 않는다는 것을 알 수 있음.  
+그래서 연산결과를 computed를 통해 계산을 시켜놓으면 성능 향상을 시킬 수 있음.  
+
+#### mapState
+---
+- mapState는 state 꺼내쓰는 코드를 짧게 쓸 수 있도록 도와주는 함수라고 생각하면 됨.
+- 일반적으로 computed() 안에 적어서 사용함.
+- 그냥 state 하나 꺼내쓸 때도 computed 안에 사용하면 편할 수도.
+```
+computed:{
+    name(){
+        return this.$store.state.name
+    },
+    age(){
+        return this.$store.state.age
+    }
+}
+```
+이렇게 하면 그냥 name이라고만 쓰면 바로 가져다 쓸 수 있다는 장점이 있음.  
+
+- computed함수는 특별하기 때문에 꼭 return이 있어야함.  
+- 근데 return 에 축약하기 귀찮으면 개별적으로 함수를 만드는 게 아니라 
+    ```
+    computed:{
+        ...mapState([]),
+    }
+    ```
+    이렇게 한번에 state자료를 밀어넣어서 사용하는 방법도 있음.  
+    이때, 
+    ```
+    import {mapState} from 'vuex'
+    ```
+    로 import를 해야 가져다 쓸 수 있음.
+- mapState함수가 뭐하는 함수냐면 내가 가져오고 싶은 state를 다 적을 수 있는 함수라고 생각하면 됨.
+    ```
+    ...mapState(['name', 'age', 'likes']),
+    ```
+    이런 식으로 computed()안에 만들어 넣으면  
+    vue 파일 안에서
+    ```
+    {{name}}
+    ```
+    요렇게 가져다 쓸 수 있음.
+- Object 자료형도 가져다 쓸 수 있고 데이터 등록도 가능함.  
+    - state에 내가 이름을 짓고 싶다면 쓰면 됨.
+    ```
+    ...mapState({ 내이름 : 'name', })
+    ```
+    - name을 '내이름'이라 가져다 쓸 수 있는 거임.
+    ```
+    {{ 내이름 }}
+    ```
+- vuex mutations를 vue 파일에서 가져다 쓰고 싶으면 $store.commit을 써야한다고 했는데 이것도 코드가 기니까 쉽게 가져다 쓰고 싶으면 methods()안에다가도 mapMutations()라는 함수를 적어 사용할 수 있음.
+    ```
+    import {mapMutations} from 'vuex'
+
+    methods : {
+        ...mapMutations(['함수명']),
+        ...mapMutations(['setMore', 'likes', 'increase']),
+    }
+    ```
+이렇게 하면 commit을 사용하지 않아도
+```
+    <button @click="increse(10)">버튼</button>
+```
+이런 식으로 쓸수 있다는 거임.  
+그러면 훨씬 store.js에 있는걸 가져다 쓸 수 있음.  
+
+이것 말고도 mapActions()도 있음.
+```
+    methods:{
+        ...mapActions([
+            'increment',
+        ])
+    }
+```
+이렇게 하면 actions() 안의 함수도 쉽게 가져다 쓸 수 있음.  
+<br/><br/>
+
+### PWA : Progressive Web App & 셋팅
+---
+우리 사이트를 앱으로 발행하는 가장 빠른 방법 - PWA  
+
+지금 만든거 모바일 앱이랑 비슷한데 그대로 앱처럼 쓸 수 없을까?  
+해서 PWA 등장한 거임.  
+
+#### PWA 되려면 필요한 파일 2개.
+1. manifest.json
+2. service-worker.js  
+
+이 두 파일이 있으면 웹에서 자동으로 앱이라 인식해서 앱을 다운받으라는 알림창을 뜨게 만들어줌.  
+
+Vue 공식 라이브러리 중에 PWA를 지원하는 라이브러리가 있음.
+```
+vue add pwa
+```
+npm 명령어 기니까 걍 이거 쓰셈.  
+
+아무튼 설치가 끝나면 이상한 파일 하나가 생겼을 거임.  

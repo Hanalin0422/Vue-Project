@@ -75,13 +75,22 @@ export default {
             flag : true,
             filterList : filterList,
             chooseFilter : "",
+            카운터 : 0,
         }
     },
     components :{
         Post,
         FilterBox,
     },
+    computed:{
+        now2(){
+            return new Date();
+        }
+    },
     methods:{
+        now(){
+            return new Date(); //현재 시간을 알려주는 함수.
+        },
         more(){
             axios.get(`https://codingapple1.github.io/vue/more${this.click}.json`)
             .then((e)=>{

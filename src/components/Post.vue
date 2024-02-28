@@ -1,7 +1,7 @@
 <template>
   <div class="post">
     <div class="post-header">
-        <div class="profile"></div>
+        <div class="profile" :style="{backgroundImage:`url(${postData.userImage})`}"></div>
         <span class="profile-name">{{ postData.name }}</span>
     </div>
     <div @click="$store.commit('clickLikes')" class="post-body" :class="postData.filter" :style="{ backgroundImage : `url(${postData.postImage})` }"></div>
