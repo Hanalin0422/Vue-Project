@@ -605,6 +605,25 @@ computed:{
     }
 ```
 이렇게 하면 actions() 안의 함수도 쉽게 가져다 쓸 수 있음.  
++  
++  
+추가,  
+내가 store.js에서 mapState()를 쓰려고 했는데 안되서 왜 안되지? 이러고 있었다.  
+알고보니 내가 그 state를 사용하고 싶은 page 내에서 쓰면 되는 거였다.  
+```
+<script>
+import { mapState } from 'vuex';
+
+export default {
+    name : 'MyPage',
+    computed:{
+        ...mapState(['follower',]),
+    }
+}
+</script>
+```
+
+
 <br/><br/>
 
 ### PWA : Progressive Web App & 셋팅
@@ -627,3 +646,307 @@ vue add pwa
 npm 명령어 기니까 걍 이거 쓰셈.  
 
 아무튼 설치가 끝나면 이상한 파일 하나가 생겼을 거임.  
+registerServiceWorker.js  
+이 파일인데 이 파일은 우리가 프로젝트를 build 할때  
+manifest.json, service-worker.js를 생성해줌.  
+
+npm run build라고 하면 dist라는 우리가 배포할 수 있는 html, css, js 완성본이 다 담김.  
+그때, 자동으로 만들어진  
+- manifest.json : 앱 정보를 담는 파일임. 여러가지 설정들이 가능함.  
+- service-worker.js   
+: 이해할 필요는 없음. 그냥 설정만 건들여주면 됨.  
+모바일앱은 인터넷 없이도 이용이 가능함.  
+이걸 그대로 따라하기 위해서 나온게 이 파일이라고 보면 됨.  
+모든 html, css, js를 하드에 저장해놓는 역할을 한다 보면 됨.
+    - service-worker.js&precache-manifest를 까보면 어떤 파일들을 저장시킬 건지에 대한 내용들을 파악할 수 있음.
+- 개발자 도구 - Application으로 들어가면 이게 앱인지 웹인지 확인가능.
+- https://로 시작하는 주소로 내가 페이지를 잘 배포했다 하면 앱 설치하겠냐는 물음이 뜸.
+
+#### play store에 진짜로 등록가능한 앱을 만들고 싶다면?
+=> apk 파일은 vue 공식 홈페이지 가면 apk 파일로 변환시켜주는 development들이 있으니 가져다 쓰면 됨.
+
+- PWA 설정을 바꾸려면 (ex, index.html은 하드에 저장하지 말아라) 가장 상단의 파일에 미리 vue.config.js를 만들어서
+    ```
+    module.exports = {
+        pwa : {
+            name : '님 앱이름',
+            themeColor : '#4DBA87',
+            msTileColor : '#000000',
+
+            workbosOptions : {
+                exclude: [/\.map$/, /manifest\.json$/, 'index.html'] <- 여기에 하드에서 제외하고 싶은 파일을 적어주면 됨.
+            }
+        }
+    }
+    ```
+    이거 쓰면 됨.  
+    이걸 쓰면 manifest랑 serviceworker를 셋팅해주는 부분이라고 보면됨.
+- 추가 설정은 workbox 라이브러리 혹은 vue pwa 검색해서 쓰셈.
+- github pages에 발행해도 pwa처럼 사용 가능함.
+
+<br/><br/>
+
+### 버그찾고 싶으면 Vue devtools 설치하기
+---
+- 간혹 코드짜다보면 props를 분명 전해줬는데 에러나고 멈추고 하는 경우가 있음.
+- 그 경우 터미널이나 크롬 개발자도구 console 탭으로 들어가면 대부분의 에러는 해결가능한데 조용하게 에러가 나는 경우도 있음.  
+    ex) 라우터 이런것들은 뭔가 틀려도 에러로 알려주지 않음.
+- 그래서 크롬 확장프로그램 중에 Vue-devtools 라고 설치하면 좀 더 자세한 버그를 파악할 수 있음.
+    ```
+    https://chrome.google.com/webstore/category/extentions
+    ```
+    여기 들어가서 vue.js devtools라고 찾아서 설치하면 됨.
+    - 설치는 나중에 출시한 확장프로그램으로 설치하기
+
+![image](https://github.com/Hanalin0422/Rodanthe-BE/assets/78638427/159003f0-9717-49ba-8bb8-4af75257917a)
+- 이렇게 설치해서 띄우면 이렇게 위쪽은 무슨 컴포넌트가 있는지 DOM트리처럼 구조화해서 보여줌.
+- 그 밑은 컴포넌트를 선택했을 때 거기 안에 들어있는 것들을 쭉 보여줌.
+- 그래서 state나 props가 잘 변하고 있는지 확인하고 싶으면 여기서 확인하면 됨.
+<br/><br/>
+
+![aaa](https://github.com/Hanalin0422/Vue-Project/assets/78638427/f440ce41-0e65-40c4-b205-4c5e1491d865)
+- 이거 진짜 신기함.
+- 과녁버튼 누르고 브라우저 내에 원하는 요소를 찍으면 그 컴포넌트를 검사해줌.
+- <>버튼 누르면 그 컴포넌트에 해당하는 요소를 element 탭에서 보여줌.
+- 네모난 버튼을 누르면 VScode에서 해당 컴포넌트를 열어줌.
+
+그 밖에도 프로젝트에 라우터를 설치했으면 route, parameter 이런 것도 다 확인할 수 있음.  
+state 누르면 브라우저에서도 수정 해볼 수 있음.  
+Timeline 메뉴에선 지금까지 어떤 이벤트가 동작했는지 체크도 가능함.  
+<br/><br/>
+
+### Composition API 사용법 (팔로워 페이지 만들기)
+---
+프로젝트가 커지면 데이터가 몇 백개 되고 데이터마다 그걸 조작하는 함수도 몇 백개가 되어가면 코드가 매우 복잡해지게 됨.  
+- 관련된 코드를 찢어놓지 않고 개발하는 방법이 Composition API라고 함.
+- 각각 항목들을 신설해 거기에 기능 개발 하는 거는 Options API라고 함. (지금까지 공부했던 문법들)
+
+Composition API를 쓰면 관련있는 코드를 한곳에 모아서 쓸 수 있음. (필수는 아님)  
+컴포넌트마다 Composition VS Options 선택 가능함.  
+
+(추가 다른 이야기 : json 데이터를 axios로 가져오면 json -> object로 자동 변환 해줌.)  
+
+- Composition API를 써서 개발하려면 setup() 안에다 코드를 짜면됨.
+```
+import {ref} from 'vue' <- import 해주기!!!!
+
+export default {
+    name : 'MyPage',
+    setup(){
+        created 라이플 사이클과 굉장히 유사함.  
+        컴포넌트를 만들기 전에 이것부터 실행해 주세요~~~
+    },
+}
+```
+- 다 setup() 이 안에 만들면 됨.
+- 이 안에 데이터 생성, 조작, methods, hook, computed, watch 다 가능함.
+- 거의 모든 기능 개발을 setup 한 곳에서 가능하게 함.
+
+```
+setup(){
+    setup()안에서 데이터 생성하는 법 : ref(데이터)
+    ex)  
+    let followers = ref([]);
+    return {followers};
+},
+```
+- 여기서 ref는 레퍼런스를 만든다는 거임.
+- 굳이 ref()에 담는 이유는 vue에서 실시간 재렌더링 되는게 reference data type이기 때문인데 그렇기 때문에 감싸는 거임.  
+    - 그래야 실시간으로 반영됨.
+    - 그냥 let a = 0; 
+    - 이런식으로 쓰면 실시간 반영이 안됨. ☆
+
+> JSON 파일을 이용하고 싶으면 public 폴더 안에 만들어서 사용하면 됨.  
+> 어차피 ajax 요청하면 JSON이 key-value 데이터로 변하니까.
+> src 파일안에서 가져와 사용하려면 '/' 이거 앞에 '.'만 안찍으면 됨.
+
+#### Composition API 안에서 ajax 요쳥으로 setup() 안의 데이터 채워넣기
+```
+    setup(){
+        let followers = ref([]);
+        
+        axios.get('/follower.json')
+        .then((e)=>{
+            followers.value = e.data;
+        })
+        .catch((error)=>{
+            console.log(error);
+        })
+
+        return {followers};
+    },
+```
+- setup(){} 내에 작성하는 건 created() hook 안에 작성하는 거랑 비슷해서 함수를 쭉 한번 실행하고 지나가는데 데이터를 조작하고 싶으면 (데이터를 수정하고 싶으면)  
+    - ★ 데이터.value 라고 써야 수정이 가능함.
+    - 이 이유는 ref()로 감싸면 이게 일종의 object가 되어서 그걸 꺼내서 조작해야 하기 때문임.
+
+- 근데 나는 Ajax 요청을 조금더 정확히 mounted(){장착되고 나서 실행할 코드} 안에서 사용하고 싶다면  
+    ```
+    setup(){
+        onMounted(()=>{
+            실행할 코드
+        })
+    }
+    ```
+    이렇게 Composition API에서 Lifecycle Hook을 써야함.
+    ```
+    import { onMounted } from 'vue'
+    ```
+    를 import 해줘야함.
+- 다른 Lifecycle Hook 쓰려면
+    ```
+    On라이프사이클함수명(()=>{실행할 코드})
+    ```
+    이런 식으로 작성해서 사용하면 됨.
+
+> 기존 store.js에서는 Options API라고 해서 data, methods, computed에 각각 로직이 흩어져 있지만 Composition API는 로직을 하나로 모아서 사용할 수 있음.  
+    >> Options API 예시
+    ```
+    <template>
+	<button @click="plus()">{{ cnt }}</button>
+    </template>
+
+    <script>
+
+    export default {
+        data () {
+            return {
+                cnt: 0,
+            }
+        },
+        methods: {
+            plus () {
+                ++this.cnt;
+            },
+        },
+        computed: {
+            double () {
+                return this.cnt * 2;
+            }
+        }
+    }
+    </script>
+    ```
+
+    >> Composition API 예시
+    ```
+    <template>
+        <button @click="plus()">숫자: {{ cnt }}</button>
+    </template>
+
+    <script setup>
+    import { ref, onMounted } from 'vue'
+
+    const cnt = ref(0)
+    const plus = () => { cnt.value++ }
+    const double = computed(() => cnt.value * 2);
+    ```
+
+<strong>복잡한 프로젝트나 모듈화가 필요한 프로젝트에서 Composition API 방식을 고려하면 좋다!</strong>
+
+<br/><br/>
+
+### Composition API 내에서 여러가지 함수들 사용법
+---
+★ CSS 파일은 빌드를 하게 되면 하나로 합쳐지게 되어 다른 파일에 적은 CSS 파일의 클래스명과 같으면 서로의 스타일을 공유하게 됨.  
+- 근데 그게 싫으면 
+    ```
+    <style scoped>
+    </style>
+    ```
+    라고 style 태그 뒤에 scoped를 붙여주면 됨.
+- 그러면 해당 vue 페이지 내에서만 css가 적용됨.
+- 전염이 안되니까 이름 신경 안쓰고 막 짜도 됨 >ㅡ<  
+
+아무튼  
+데이터 만들때 사용하는 함수가 3개 있음.
+- **ref()**  
+    : 관습적으로 array, object 말고 나머지 자료형을 집어넣음.
+- **reactive()**  
+    : 이 함수는 ref()랑 똑같은 기능을 함. 데이터 만든다.!  
+    근데 차이점은 보통 array, object 집어넣음.
+```
+let followers = ref([]);
+let test = reactive({name : 'kim'});
+```
+
+- **toRefs()**  
+    : Compositioin API에서 props를 사용하게 해주는 함수임.
+    ```
+    export default {
+    name : 'MyPage',
+    props:{
+        one : Number,
+    },
+    ```
+    - 원래 props 가져다 쓰려면 이렇게 쓰는데
+    - setup() 함수 내에 저 one이라는 props를 가져다 쓰고 싶으면
+    ```
+     setup(props, context){
+        let {one, two, } = toRefs(props);
+     }
+     ```
+     - 첫번째 파라미터는 항상 props.
+     - 두번째 파라미터는 항상 이상한거 담겨있음.  
+     attrs, slots, emit 이런거.
+    - 아무튼 이런식으로 쓰면 실시간 자동으로 반영이되게 props를 사용할 수 있음.
+    - props가 보통 여러개니까 toRefs()라고 쓰고 내가 사용하고 싶은 props의 이름을 왼쪽에 객체 형태로 쭉 작명해서 사용하면 됨.
+
+> Composition API에서 props 사용법
+```
+let { 어쩌구 } = toRefs(props)
+```
+가져다 쓸땐  **어쩌구.value**
+- 저기서 중괄호 써서 변수를 선언하는 걸 js 문법으로 Destructing 문법이라고함.
+
+어쨌든 props를 저렇게 하면 바로바로 반영해서 쓸 수 있음.
+
+#### Composition API에서 watch 사용법
+---
+```
+watch(감시할거, () => {실행할 코드})
+```
+- 첫번째 파라미터(여기서는 감시할거 자리)는 내가 watch하고 싶은 파라미터 명칭
+
+#### Composition API에서 computed 사용법
+---
+
+```
+let 결과 = computed(()=> {return 연산결과})
+데이터 가져다 쓸때는 항상 **결과.value**
+```
+- computed() 함수도 똑같음.
+- 괄호 안에는 항상 함수가 하나 들어감.
+- 이거 전부 setup(){} 안에 쓰고 있는 거임!!!!!
+
+#### Composition API에서 vuex store 사용법
+---
+```
+import {useStore} from 'vuex'
+
+let store = useStore();
+console.log(store.state.name)
+console.log(store.commit())
+```
+- 이런 식으로 쓰면 됨.
+
+
+#### Composition API에서 mapState 사용법
+---
+- 못함.
+- 단점임.
+- Vuex 5 버전 이상에서는 되지 않을까?
+
+
+#### Composition API에서 methods 사용법
+---
+```
+setup(){
+    function 함수(){
+
+    }
+    return {함수}
+}
+```
+이렇게 쓰면 됨.
+- 쓸때 함수() 이렇게 써도 되고 아니면 함수 그냥 이렇게 소괄호 빼도 됨.

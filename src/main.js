@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import mitt from 'mitt'
 import store from './store'
+import './registerServiceWorker'
 
 let emitter = mitt();
 let app = createApp(App);

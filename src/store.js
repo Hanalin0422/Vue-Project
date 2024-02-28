@@ -1,5 +1,6 @@
 import { createStore } from "vuex"
 import axios from "axios"
+import follower from '../src/assets/follower'
 
 const store = createStore({
     state(){
@@ -9,6 +10,7 @@ const store = createStore({
             likes : 0,
             addlikes : true,
             more : {},
+            follower : follower,
         }
     },
     mutations:{

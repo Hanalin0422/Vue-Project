@@ -51,8 +51,12 @@
             <div class="write">
                 <textarea @change="userPost = $event.target.value" class="write-box">write!</textarea>
             </div>
-
         </div>
+
+        <div v-if="step == 3">
+            <MyPage :one="1"/>
+        </div>
+
     </div>
 </template>
 
@@ -62,6 +66,7 @@ import axios from 'axios';
 import postData from '../assets/posting';
 import FilterBox from './FilterBox.vue';
 import filterList from '../assets/filter';
+import MyPage from './MyPage.vue';
 
 export default {
     name : 'Home',
@@ -69,7 +74,7 @@ export default {
         return {
             click : 0,
             postData : postData,
-            step : 0,
+            step : 3,
             uploadImg : "",
             userPost : "",
             flag : true,
@@ -81,6 +86,7 @@ export default {
     components :{
         Post,
         FilterBox,
+        MyPage,
     },
     computed:{
         now2(){
